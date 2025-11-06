@@ -1,58 +1,111 @@
 <app-auth-layout-component namePage="Iniciar sesion" messagePage="Ingresa explora un mundo de posibilidades.">
-    <form class="max-w-md mx-auto w-full p-4 md:p-6">
+    <form class="max-w-md mx-auto w-full p-4 md:p-6" (ngSubmit)="onSubmit()" #loginForm="ngForm">
         <div class="mb-8">
-        <a href="javascript:void(0)" class="inline-block">
-            <img src="https://readymadeui.com/readymadeui.svg" alt="logo" class="w-40" />
-        </a>
+            <a href="javascript:void(0)" class="inline-block">
+                <img src="/favicon.png" alt="logo" class="w-20 grayscale" />
+            </a>
         </div>
 
+        <!-- Mensaje de error -->
+        @if (errorMessage) {
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+                <p class="text-sm text-red-600">{{ errorMessage }}</p>
+            </div>
+        }
+
         <div class="space-y-6">
-        <div>
-            <label class="text-slate-900 text-sm font-medium mb-2 block">Correo electronico</label>
-            <div class="relative flex items-center">
-            <input name="email" type="text" required class="w-full text-sm text-slate-900 bg-slate-100 focus:bg-transparent pl-4 pr-10 py-3 rounded-md border border-slate-100 focus:border-blue-600 outline-none transition-all" placeholder="Enter email" />
-            <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb" class="w-[18px] h-[18px] absolute right-4" viewBox="0 0 682.667 682.667">
-                <defs>
-                <clipPath id="a" clipPathUnits="userSpaceOnUse">
-                    <path d="M0 512h512V0H0Z" data-original="#000000"></path>
-                </clipPath>
-                </defs>
-                <g clip-path="url(#a)" transform="matrix(1.33 0 0 -1.33 0 682.667)">
-                <path fill="none" stroke-miterlimit="10" stroke-width="40" d="M452 444H60c-22.091 0-40-17.909-40-40v-39.446l212.127-157.782c14.17-10.54 33.576-10.54 47.746 0L492 364.554V404c0 22.091-17.909 40-40 40Z" data-original="#000000"></path>
-                <path d="M472 274.9V107.999c0-11.027-8.972-20-20-20H60c-11.028 0-20 8.973-20 20V274.9L0 304.652V107.999c0-33.084 26.916-60 60-60h392c33.084 0 60 26.916 60 60v196.653Z" data-original="#000000"></path>
-                </g>
-            </svg>
+            <div>
+                <label class="text-slate-900 text-sm font-medium mb-2 block">Correo electrónico</label>
+                <div class="relative flex items-center">
+                    <input 
+                        name="email" 
+                        type="email" 
+                        required 
+                        [(ngModel)]="formData.username"
+                        class="w-full text-sm text-slate-900 bg-slate-100 focus:bg-transparent pl-4 pr-10 py-3 rounded-md border border-slate-100 focus:border-red-600 outline-none transition-all" 
+                        placeholder="correo@ejemplo.com" 
+                    />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb" class="w-[18px] h-[18px] absolute right-4" viewBox="0 0 682.667 682.667">
+                        <defs>
+                            <clipPath id="a" clipPathUnits="userSpaceOnUse">
+                                <path d="M0 512h512V0H0Z" data-original="#000000"></path>
+                            </clipPath>
+                        </defs>
+                        <g clip-path="url(#a)" transform="matrix(1.33 0 0 -1.33 0 682.667)">
+                            <path fill="none" stroke-miterlimit="10" stroke-width="40" d="M452 444H60c-22.091 0-40-17.909-40-40v-39.446l212.127-157.782c14.17-10.54 33.576-10.54 47.746 0L492 364.554V404c0 22.091-17.909 40-40 40Z" data-original="#000000"></path>
+                            <path d="M472 274.9V107.999c0-11.027-8.972-20-20-20H60c-11.028 0-20 8.973-20 20V274.9L0 304.652V107.999c0-33.084 26.916-60 60-60h392c33.084 0 60 26.916 60 60v196.653Z" data-original="#000000"></path>
+                        </g>
+                    </svg>
+                </div>
             </div>
-        </div>
-        <div>
-            <label class="text-slate-900 text-sm font-medium mb-2 block">Contraseña</label>
-            <div class="relative flex items-center">
-            <input name="password" type="password" required class="w-full text-sm text-slate-900 bg-slate-100 focus:bg-transparent pl-4 pr-10 py-3 rounded-md border border-slate-100 focus:border-blue-600 outline-none transition-all" placeholder="Enter password" />
-            <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb" class="w-[18px] h-[18px] absolute right-4 cursor-pointer" viewBox="0 0 128 128">
-                <path d="M64 104C22.127 104 1.367 67.496.504 65.943a4 4 0 0 1 0-3.887C1.367 60.504 22.127 24 64 24s62.633 36.504 63.496 38.057a4 4 0 0 1 0 3.887C126.633 67.496 105.873 104 64 104zM8.707 63.994C13.465 71.205 32.146 96 64 96c31.955 0 50.553-24.775 55.293-31.994C114.535 56.795 95.854 32 64 32 32.045 32 13.447 56.775 8.707 63.994zM64 88c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm0-40c-8.822 0-16 7.178-16 16s7.178 16 16 16 16-7.178 16-16-7.178-16-16-16z" data-original="#000000"></path>
-            </svg>
+
+            <div>
+                <label class="text-slate-900 text-sm font-medium mb-2 block">Contraseña</label>
+                <div class="relative flex items-center">
+                    <input 
+                        name="password" 
+                        [type]="showPassword ? 'text' : 'password'" 
+                        required 
+                        [(ngModel)]="formData.password"
+                        class="w-full text-sm text-slate-900 bg-slate-100 focus:bg-transparent pl-4 pr-10 py-3 rounded-md border border-slate-100 focus:border-red-600 outline-none transition-all" 
+                        placeholder="Ingresa tu contraseña" 
+                    />
+                    <svg 
+                        (click)="togglePasswordVisibility()"
+                        xmlns="http://www.w3.org/2000/svg" 
+                        fill="#bbb" 
+                        stroke="#bbb" 
+                        class="w-[18px] h-[18px] absolute right-4 cursor-pointer" 
+                        viewBox="0 0 128 128"
+                    >
+                        <path d="M64 104C22.127 104 1.367 67.496.504 65.943a4 4 0 0 1 0-3.887C1.367 60.504 22.127 24 64 24s62.633 36.504 63.496 38.057a4 4 0 0 1 0 3.887C126.633 67.496 105.873 104 64 104zM8.707 63.994C13.465 71.205 32.146 96 64 96c31.955 0 50.553-24.775 55.293-31.994C114.535 56.795 95.854 32 64 32 32.045 32 13.447 56.775 8.707 63.994zM64 88c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm0-40c-8.822 0-16 7.178-16 16s7.178 16 16 16 16-7.178 16-16-7.178-16-16-16z" data-original="#000000"></path>
+                    </svg>
+                </div>
             </div>
-        </div>
-        <div class="flex flex-wrap items-center gap-4 justify-between">
-            <div class="flex items-center">
-            <input id="remember-me" name="remember-me" type="checkbox" class="shrink-0 h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded-md" />
-            <label for="remember-me" class="ml-3 block text-sm text-slate-900">
-                Recuerdame
-            </label>
+
+            <div class="flex flex-wrap items-center gap-4 justify-between">
+                <div class="flex items-center">
+                    <input 
+                        id="remember-me" 
+                        name="remember-me" 
+                        type="checkbox" 
+                        [(ngModel)]="rememberMe"
+                        class="shrink-0 h-4 w-4 text-red-600 focus:ring-red-500 border-slate-300 rounded-md" 
+                    />
+                    <label for="remember-me" class="ml-3 block text-sm text-slate-900">
+                        Recuérdame
+                    </label>
+                </div>
+                <div class="text-sm">
+                    <a href="javascript:void(0);" class="text-red-600 font-medium hover:underline">
+                        ¿Olvidaste tu contraseña?
+                    </a>
+                </div>
             </div>
-            <div class="text-sm">
-            <a href="jajvascript:void(0);" class="text-blue-600 font-medium hover:underline">
-                ¿Olvidaste tu contraseña?
-            </a>
-            </div>
-        </div>
         </div>
 
         <div class="mt-12">
-        <button type="button" class="w-full shadow-xl py-2 px-4 text-[15px] tracking-wide font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer">
-            Ingresar
-        </button>
-        <p class="text-sm mt-6 text-center text-slate-600">¿No tienes una cuenta? <a routerLink="/auth/register" class="text-blue-600 font-medium tracking-wide hover:underline ml-1">Registrate aquí</a></p>
+            <button 
+                type="submit" 
+                [disabled]="isLoading || !loginForm.valid"
+                class="w-full shadow-xl py-2 px-4 text-[15px] tracking-wide font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none disabled:bg-red-400 disabled:cursor-not-allowed transition-colors"
+            >
+                @if (!isLoading) {
+                    <span>Ingresar</span>
+                } @else {
+                    <span class="flex items-center justify-center">
+                        <svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Ingresando...
+                    </span>
+                }
+            </button>
+            <p class="text-sm mt-6 text-center text-slate-600">
+                ¿No tienes una cuenta? 
+                <a routerLink="/auth/register" class="text-red-600 font-medium tracking-wide hover:underline ml-1">Regístrate aquí</a>
+            </p>
         </div>
     </form>
 </app-auth-layout-component>
