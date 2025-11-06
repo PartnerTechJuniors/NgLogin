@@ -1,0 +1,19 @@
+<main class="bg-gray-100 lg:h-screen flex items-center justify-center p-4">
+    <div class="max-w-6xl bg-white [box-shadow:0_2px_10px_-3px_rgba(6,81,237,0.3)] p-4 lg:p-5 rounded-md">
+        <div class="grid md:grid-cols-2 items-center gap-y-8">
+        <ng-content />
+
+        <div class="w-full h-full">
+            <div class="aspect-square bg-gray-50 relative before:absolute before:inset-0 before:bg-red-600/30 rounded-md overflow-hidden w-full h-full">
+              <img src="https://images.pexels.com/photos/16612657/pexels-photo-16612657.jpeg" class="w-full h-full object-cover" alt="login img" />
+              <div class="absolute inset-0 m-auto max-w-sm p-6 flex items-center justify-center">
+                  <div>
+                  <h1 class="text-white text-4xl font-semibold">{{ namePage() }}</h1>
+                  <p class="text-slate-100 text-[15px] font-medium mt-6 leading-relaxed">{{ messagePage() }}</p>
+                  </div>
+              </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</main>
