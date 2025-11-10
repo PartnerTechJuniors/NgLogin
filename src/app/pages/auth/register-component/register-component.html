@@ -68,7 +68,7 @@
                         class="w-full text-sm text-slate-900 bg-slate-100 focus:bg-transparent px-4 py-3 rounded-md border border-slate-100 focus:border-red-600 outline-none transition-all cursor-pointer"
                     >
                         <option value="" disabled selected>Selecciona tu país</option>
-                        @for (country of countries; track country) {
+                        @for (country of countries(); track country) {
                             <option [value]="country">{{ country }}</option>
                         }
                     </select>
