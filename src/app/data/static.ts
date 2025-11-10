@@ -1,0 +1,23 @@
+export const countries: string[] = [
+  'Argentina',
+  'Bolivia',
+  'Brasil',
+  'Chile',
+  'Colombia',
+  'Costa Rica',
+  'Cuba',
+  'Ecuador',
+  'El Salvador',
+  'España',
+  'Guatemala',
+  'Honduras',
+  'México',
+  'Nicaragua',
+  'Panamá',
+  'Paraguay',
+  'Perú',
+  'Puerto Rico',
+  'República Dominicana',
+  'Uruguay',
+  'Venezuela'
+];

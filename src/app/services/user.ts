@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpStatusCode } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface User {
@@ -41,14 +41,20 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   getAllUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/getAll`);
+    return this.http.get<User[]>(`${this.apiUrl}/all`);
+  }
+
+  async getMe(): Promise<Observable<User>> {
+    return this.http.get<User>(`${this.apiUrl}/me`);
   }
 
   updateUser(id: number, data: UpdateUserRequest): Observable<UpdateUserResponse> {
     return this.http.put<UpdateUserResponse>(`${this.apiUrl}/update/${id}`, data);
   }
 
-  deleteUser(id: number): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(`${this.apiUrl}/delete/${id}`);
+  deleteUser(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/delete/${id}`, {
+      responseType: 'text'
+    });
   }
 }

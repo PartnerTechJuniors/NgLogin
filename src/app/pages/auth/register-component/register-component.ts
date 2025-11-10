@@ -1,9 +1,10 @@
 import { AuthLayoutComponent } from '@layouts/auth-layout-component/auth-layout-component';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { FormsModule } from '@angular/forms';
 import { AuthService, RegisterRequest } from '@services/auth';
 import { HttpErrorResponse } from '@angular/common/http';
+import { countries } from '@/app/data/static';
 
 @Component({
   selector: 'app-register-component',
@@ -13,7 +14,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class RegisterComponent {
   currentStep: number = 1;
-  
+  public countries = signal<string[]>(countries);
+
   formData: RegisterRequest = {
     username: '',
     password: '',
@@ -27,30 +29,6 @@ export class RegisterComponent {
   isLoading: boolean = false;
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
-
-  countries: string[] = [
-    'Argentina',
-    'Bolivia',
-    'Brasil',
-    'Chile',
-    'Colombia',
-    'Costa Rica',
-    'Cuba',
-    'Ecuador',
-    'El Salvador',
-    'España',
-    'Guatemala',
-    'Honduras',
-    'México',
-    'Nicaragua',
-    'Panamá',
-    'Paraguay',
-    'Perú',
-    'Puerto Rico',
-    'República Dominicana',
-    'Uruguay',
-    'Venezuela'
-  ];
 
   constructor(private authService: AuthService) {}
 
