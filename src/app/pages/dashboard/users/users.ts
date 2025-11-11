@@ -1,9 +1,10 @@
 import { Component, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { User, UserService, UpdateUserRequest } from '@services/user';
+import { UserService } from '@services/user';
 import { AdminLayoutComponent } from "@/app/layouts/admin-layout-component/admin-layout-component";
 import { countries } from '@/app/data/static';
+import { UpdateUserRequest, User } from '@/app/types/users';
 
 @Component({
   selector: 'app-users',

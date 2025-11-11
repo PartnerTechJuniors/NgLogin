@@ -1,59 +1,30 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpStatusCode } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-export interface User {
-  id: number;
-  username: string;
-  lastname: string;
-  firstname: string;
-  country: string;
-  role: 'USER' | 'ADMIN';
-  enabled: boolean;
-  authorities?: { authority: string }[];
-  accountNonLocked?: boolean;
-  credentialsNonExpired?: boolean;
-  accountNonExpired?: boolean;
-}
-
-export interface UpdateUserRequest {
-  username?: string;
-  role?: 'USER' | 'ADMIN';
-  enabled?: boolean;
-  password?: string;
-  firstname?: string;
-  lastname?: string;
-  country?: string;
-}
-
-export interface UpdateUserResponse {
-  firstname: string;
-  lastname: string;
-  country: string;
-}
+import { UpdateUserRequest, UpdateUserResponse, User } from '@/app/types/users';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:8080/api/v1/user';
+  private apiUrl = 'http://localhost:8080/api/v1/';
 
   constructor(private http: HttpClient) {}
 
   getAllUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/all`);
+    return this.http.get<User[]>(`${this.apiUrl}/admin/all`);
   }
 
   async getMe(): Promise<Observable<User>> {
-    return this.http.get<User>(`${this.apiUrl}/me`);
+    return this.http.get<User>(`${this.apiUrl}/user/me`);
   }
 
   updateUser(id: number, data: UpdateUserRequest): Observable<UpdateUserResponse> {
-    return this.http.put<UpdateUserResponse>(`${this.apiUrl}/update/${id}`, data);
+    return this.http.put<UpdateUserResponse>(`${this.apiUrl}/admin/update/${id}`, data);
   }
 
   deleteUser(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/delete/${id}`, {
+    return this.http.delete(`${this.apiUrl}/admin/delete/${id}`, {
       responseType: 'text'
     });
   }

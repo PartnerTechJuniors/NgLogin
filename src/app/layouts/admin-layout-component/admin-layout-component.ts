@@ -1,5 +1,6 @@
 import { AuthService } from '@/app/services/auth';
-import { User, UserService } from '@/app/services/user';
+import { UserService } from '@/app/services/user';
+import { User } from '@/app/types/users';
 import { NgClass } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from "@angular/router";
