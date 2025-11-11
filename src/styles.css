@@ -1,1 +1,35 @@
 @import "tailwindcss";
+
+@theme{
+  --animate-bluraper: bluraper .5s ease-in;
+  --animate-fadein: fadein 0.3s ease-in-out;
+}
+
+@layer components {
+  .bg-shimmer {
+    animation: shimmer 3s infinite;
+    background-size: 200% 100%;
+    @apply bg-gradient-to-r from-gray-200 via-white to-gray-200;
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes bluraper {
+  0% { filter: blur(10px); }
+  100% { filter: blur(0px); }
+}
