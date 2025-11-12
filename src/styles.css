@@ -1,1 +1,37 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme{
+  --animate-bluraper: bluraper .5s ease-in;
+  --animate-fadein: fadein 0.3s ease-in-out;
+}
+
+@layer components {
+  .bg-shimmer {
+    animation: shimmer 3s infinite;
+    background-size: 200% 100%;
+    @apply bg-linear-to-r dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 from-gray-200 via-gray-400 to-gray-200;
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes bluraper {
+  0% { filter: blur(10px); }
+  100% { filter: blur(0px); }
+}

@@ -4,6 +4,7 @@ import { RouterLink } from "@angular/router";
 import { FormsModule } from '@angular/forms';
 import { AuthService, LoginRequest } from '@services/auth';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ToastNotify } from '@/app/services/toast';
 
 @Component({
   selector: 'app-login-component',
@@ -23,6 +24,7 @@ export class LoginComponent {
   showPassword: boolean = false;
 
   authService = inject(AuthService);
+  toastNotifyService = inject(ToastNotify);
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
@@ -42,18 +44,20 @@ export class LoginComponent {
     this.authService.login(this.formData).subscribe({
       next: (response) => {
         this.authService.saveToken(response.token);
+        this.authService.getInfoUser();
+        this.toastNotifyService.displayToast('Inicio de sesión exitoso', 'success', 'left');
         this.authService.navigateToDashboard();
       },
       error: (error: HttpErrorResponse) => {
         this.isLoading = false;
         if (error.status === 0) {
-          this.errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión.';
+          this.toastNotifyService.displayToast('No se pudo conectar con el servidor. Verifica tu conexión.', 'error', 'left');
         } else if (error.status === 401) {
-          this.errorMessage = 'Credenciales incorrectas. Verifica tu correo y contraseña.';
+          this.toastNotifyService.displayToast('Credenciales incorrectas. Verifica tu correo y contraseña.', 'error', 'left');
         } else if (error.status === 404) {
-          this.errorMessage = 'Usuario no encontrado.';
+          this.toastNotifyService.displayToast('Usuario no encontrado.', 'error', 'left');
         } else {
-          this.errorMessage = error.error?.message || 'Error al iniciar sesión. Intenta nuevamente.';
+          this.toastNotifyService.displayToast(error.error?.message || 'Error al iniciar sesión. Intenta nuevamente.', 'error', 'left');
         }
       }
     });

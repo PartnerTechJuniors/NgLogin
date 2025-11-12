@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { UserService } from './user';
+import { User } from '@app/types/users';
 
 export interface RegisterRequest {
   username: string;
@@ -28,7 +30,8 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private userService: UserService
   ) {}
 
   register(data: RegisterRequest): Observable<AuthResponse> {
@@ -37,6 +40,14 @@ export class AuthService {
 
   login(data: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, data);
+  }
+
+  getInfoUser() {
+    (this.userService.getMe()).subscribe({
+      next: (data) => {
+        this.saveUser(data);
+      }
+    })
   }
 
   saveToken(token: string): void {
@@ -62,6 +73,7 @@ export class AuthService {
 
   logout(): void {
     document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    localStorage.removeItem('user');
     this.router.navigate(['/auth/login']);
   }
 
@@ -71,5 +83,14 @@ export class AuthService {
 
   navigateToDashboard(): void {
     this.router.navigate(['/dashboard']);
+  }
+
+  saveUser(user: User): void {
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  getUser(): User | null {
+    const data = localStorage.getItem('user');
+    return data ? JSON.parse(data) : null;
   }
 }

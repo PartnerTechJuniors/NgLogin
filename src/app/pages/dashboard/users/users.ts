@@ -1,17 +1,25 @@
 import { Component, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { User, UserService, UpdateUserRequest } from '@services/user';
+import { UserService } from '@services/user';
 import { AdminLayoutComponent } from "@/app/layouts/admin-layout-component/admin-layout-component";
 import { countries } from '@/app/data/static';
+import { UpdateUserRequest, User } from '@/app/types/users';
+import { Skeleton } from "./skeleton/skeleton";
+import { LucideAngularModule, Trash2Icon, PencilIcon} from 'lucide-angular';
+import { ToastNotify } from '@/app/services/toast';
 
 @Component({
   selector: 'app-users',
-  imports: [FormsModule, AdminLayoutComponent],
+  imports: [FormsModule, AdminLayoutComponent, Skeleton, LucideAngularModule],
   templateUrl: './users.html',
   styles: ``,
 })
 export class Users {
+  //icons
+  readonly TrashIcon = Trash2Icon;
+  readonly PencilIcon = PencilIcon;
+
   // Signals
   users = signal<User[]>([]);
   isLoading = signal<boolean>(false);
@@ -23,12 +31,24 @@ export class Users {
   showEditModal = signal<boolean>(false);
   showDeleteModal = signal<boolean>(false);
   selectedUser = signal<User | null>(null);
+  showCreateModal = signal<boolean>(false);
 
   // Edit form data
   editForm = signal<UpdateUserRequest>({});
 
   // Lista de países
   public countries = signal<string[]>(countries);
+
+  // Create form data
+  createForm = signal<UpdateUserRequest>({
+    username: '',
+    password: '',
+    firstname: '',
+    lastname: '',
+    country: '',
+    role: 'USER',
+    enabled: true
+  });
 
   // Computed - Usuarios filtrados
   filteredUsers = computed(() => {
@@ -43,7 +63,7 @@ export class Users {
     );
   });
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private toastNotifyService: ToastNotify) {
     this.loadUsers();
   }
 
@@ -98,22 +118,21 @@ export class Users {
 
     this.userService.updateUser(user.id, this.editForm()).subscribe({
       next: () => {
-        this.successMessage.set('Usuario actualizado exitosamente');
+        this.toastNotifyService.displayToast('Usuario actualizado exitosamente');
+        this.closeEditModal();
         this.loadUsers();
       },
       error: (error: HttpErrorResponse) => {
         this.isLoading.set(false);
         if (error.status === 400) {
-          this.errorMessage.set('Datos inválidos. Verifica la información.');
+          this.toastNotifyService.displayToast('Datos inválidos. Verifica la información.', 'warning', 'left');
         } else if (error.status === 404) {
-          this.errorMessage.set('Usuario no encontrado.');
+          this.toastNotifyService.displayToast('Usuario no encontrado.', 'error', 'left');
         } else {
-          this.errorMessage.set('Error al actualizar el usuario.');
+          this.toastNotifyService.displayToast('Error al actualizar el usuario.', 'error', 'left');
         }
       }
-    });
-    
-    this.closeEditModal();
+    });    
   }
 
   toggleUserEnabled(user: User): void {
@@ -127,11 +146,11 @@ export class Users {
         this.users.update(users =>
           users.map(u => u.id === user.id ? { ...u, enabled: updatedEnabled } : u)
         );
-        this.successMessage.set(`Usuario ${updatedEnabled ? 'habilitado' : 'deshabilitado'} exitosamente`);
+        this.toastNotifyService.displayToast(`Usuario ${updatedEnabled ? 'habilitado' : 'deshabilitado'} exitosamente`);
         setTimeout(() => this.clearMessages(), 3000);
       },
       error: (error: HttpErrorResponse) => {
-        this.errorMessage.set('Error al cambiar el estado del usuario.');
+        this.toastNotifyService.displayToast('Error al cambiar el estado del usuario.', 'error', 'left');
         setTimeout(() => this.clearMessages(), 3000);
       }
     });
@@ -146,11 +165,11 @@ export class Users {
         this.users.update(users =>
           users.map(u => u.id === user.id ? { ...u, role: newRole } : u)
         );
-        this.successMessage.set('Rol actualizado exitosamente');
+        this.toastNotifyService.displayToast('Rol actualizado exitosamente');
         setTimeout(() => this.clearMessages(), 3000);
       },
       error: (error: HttpErrorResponse) => {
-        this.errorMessage.set('Error al cambiar el rol del usuario.');
+        this.toastNotifyService.displayToast('Error al cambiar el rol del usuario.', 'error', 'left');
         setTimeout(() => this.clearMessages(), 3000);
       }
     });
@@ -176,15 +195,15 @@ export class Users {
 
     this.userService.deleteUser(user.id).subscribe({
       next: () => {
-        this.successMessage.set('Usuario eliminado exitosamente');
+        this.toastNotifyService.displayToast('Usuario eliminado exitosamente');
         this.loadUsers();
       },
       error: (error: HttpErrorResponse) => {
         this.isLoading.set(false);
         if (error.status === 404) {
-          this.errorMessage.set('Usuario no encontrado.');
+          this.toastNotifyService.displayToast('Usuario no encontrado.', 'error', 'left');
         } else {
-          this.errorMessage.set('Error al eliminar el usuario.');
+          this.toastNotifyService.displayToast('Error al eliminar el usuario.', 'error', 'left');
         }
       }
     });
@@ -199,5 +218,57 @@ export class Users {
 
   updateEditForm(field: keyof UpdateUserRequest, value: any): void {
     this.editForm.update(form => ({ ...form, [field]: value }));
+  }
+
+  openCreateModal(): void {
+    this.createForm.set({
+      username: '',
+      password: '',
+      firstname: '',
+      lastname: '',
+      country: this.countries()[0] || 'Perú',
+      role: 'USER',
+      enabled: true
+    });
+    this.showCreateModal.set(true);
+    this.clearMessages();
+  }
+
+  closeCreateModal(): void {
+    this.showCreateModal.set(false);
+    this.createForm.set({
+      username: '',
+      password: '',
+      firstname: '',
+      lastname: '',
+      country: '',
+      role: 'USER',
+      enabled: true
+    });
+  }
+
+  updateCreateForm(field: keyof UpdateUserRequest, value: any): void {
+    this.createForm.update(f => ({ ...f, [field]: value }));
+  }
+
+  createUser(): void {
+    this.isLoading.set(true);
+    this.clearMessages();
+
+    this.userService.registerNewUser(this.createForm()).subscribe({
+      next: () => {
+        this.toastNotifyService.displayToast('Usuario registrado exitosamente');
+        this.loadUsers();
+        this.closeCreateModal();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isLoading.set(false);
+        if (error.status === 400) {
+          this.toastNotifyService.displayToast('Datos inválidos. Verifica la información.', 'error', 'left');
+        } else {
+          this.toastNotifyService.displayToast('Error al registrar el usuario.', 'error', 'left');
+        }
+      }
+    });
   }
 }
