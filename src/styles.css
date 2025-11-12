@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme{
   --animate-bluraper: bluraper .5s ease-in;
   --animate-fadein: fadein 0.3s ease-in-out;
@@ -9,7 +11,7 @@
   .bg-shimmer {
     animation: shimmer 3s infinite;
     background-size: 200% 100%;
-    @apply bg-linear-to-r from-gray-800 via-gray-300 to-gray-800;
+    @apply bg-linear-to-r dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 from-gray-200 via-gray-400 to-gray-200;
   }
 }
 

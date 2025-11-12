@@ -1,0 +1,16 @@
+@if(darkThemeSelectorService.currentTheme() === 'light'){
+  <button (click)="darkThemeSelectorService.toggleTheme()" 
+    [ngClass]="extraClasses()"
+    class="rounded-full dark:bg-white bg-gray-800 shadow-lg cursor-pointer text-white dark:text-gray-800">
+    <i-lucide [img]="MoonIcon" /> 
+  </button>
+}@else{
+  <button (click)="darkThemeSelectorService.toggleTheme()" 
+    [ngClass]="extraClasses()"
+    class="rounded-full dark:bg-white bg-gray-800 shadow-lg cursor-pointer">
+    <i-lucide [img]="SunIcon" />
+  </button>
+}
+<!-- <button (click)="darkThemeSelectorService.setSystemTheme()" class="dark:text-white">
+  <i-lucide [img]="MonitorIcon" class="my-icon" />
+</button> -->

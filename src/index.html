@@ -10,4 +10,14 @@
 <body>
   <app-root></app-root>
 </body>
+<script>
+  const theme = localStorage.getItem('theme');
+  const browserDark = window.matchMedia('(prefers-color-scheme: dark)').matches;if (theme !== null) {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    }
+  } else if (browserDark) {
+    document.documentElement.classList.add('dark');
+  }
+</script>
 </html>

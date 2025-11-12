@@ -1,5 +1,5 @@
-<main class="bg-gray-100 lg:h-screen flex items-center justify-center p-4">
-    <div class="max-w-6xl bg-white [box-shadow:0_2px_10px_-3px_rgba(6,81,237,0.3)] p-4 lg:p-5 rounded-md">
+<main class="bg-gray-100 dark:bg-gray-700 lg:h-screen flex items-center justify-center p-4">
+    <div class="max-w-6xl bg-white dark:bg-gray-800 [box-shadow:0_2px_10px_-3px_rgba(6,81,237,0.3)] p-4 lg:p-5 rounded-md">
         <div class="grid md:grid-cols-2 items-center gap-y-8">
         <ng-content />
 
@@ -17,3 +17,6 @@
         </div>
     </div>
 </main>
+<div class="fixed bottom-4 right-4">
+  <app-theme-toggle extraClasses="p-2" />
+</div>

@@ -15,7 +15,7 @@ export class UserService {
     return this.http.get<User[]>(`${this.apiUrl}/admin/all`);
   }
 
-  async getMe(): Promise<Observable<User>> {
+  getMe(): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/user/me`);
   }
 

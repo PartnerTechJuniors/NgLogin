@@ -1,5 +1,5 @@
 <app-admin-layout-component>
-  <div class="p-4 sm:ml-64 dark:bg-gray-900 bg-white h-full">
+  <div class="p-4 sm:ml-64 dark:bg-gray-900 bg-white min-h-dvh max-h-auto">
     <div class="p-6 mt-14">
       <!-- Header -->
       <div class="mb-6">
@@ -104,13 +104,13 @@
                             (click)="openEditModal(user)"
                             class="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
                           >
-                            Editar
+                            <i-lucide [img]="PencilIcon" /> 
                           </button>
-                          <button
+                        <button
                             (click)="openDeleteModal(user)"
                             class="font-medium text-red-600 dark:text-red-300 hover:underline cursor-pointer"
                           >
-                            Eliminar
+                            <i-lucide [img]="TrashIcon" /> 
                           </button>
                         </div>
                       </td>

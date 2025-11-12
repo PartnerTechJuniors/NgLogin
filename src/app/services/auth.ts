@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { UserService } from './user';
+import { User } from '@app/types/users';
 
 export interface RegisterRequest {
   username: string;
@@ -41,9 +42,9 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, data);
   }
 
-  async getInfoUser() {
-    (await this.userService.getMe()).subscribe({
-      next: async (data) => {
+  getInfoUser() {
+    (this.userService.getMe()).subscribe({
+      next: (data) => {
         this.saveUser(data);
       }
     })
@@ -84,11 +85,11 @@ export class AuthService {
     this.router.navigate(['/dashboard']);
   }
 
-  async saveUser(user: any): Promise<void> {
+  saveUser(user: User): void {
     localStorage.setItem('user', JSON.stringify(user));
   }
 
-  getUser(): any | null {
+  getUser(): User | null {
     const data = localStorage.getItem('user');
     return data ? JSON.parse(data) : null;
   }

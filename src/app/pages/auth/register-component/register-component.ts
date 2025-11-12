@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService, RegisterRequest } from '@services/auth';
 import { HttpErrorResponse } from '@angular/common/http';
 import { countries } from '@/app/data/static';
+import { ToastNotify } from '@services/toast';
 
 @Component({
   selector: 'app-register-component',
@@ -30,7 +31,7 @@ export class RegisterComponent {
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private toastNotifyService: ToastNotify) {}
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
@@ -96,21 +97,20 @@ export class RegisterComponent {
     this.isLoading = true;
 
     this.authService.register(this.formData).subscribe({
-      next: async (response) => {
+      next: (response) => {
         this.authService.saveToken(response.token);
-        await this.authService.getInfoUser();
+        this.authService.getInfoUser();
+        this.toastNotifyService.displayToast('Registro exitoso', 'success', 'left');
         this.authService.navigateToDashboard();
       },
       error: (error: HttpErrorResponse) => {
         this.isLoading = false;
         if (error.status === 0) {
-          this.errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión.';
+          this.toastNotifyService.displayToast('No se pudo conectar con el servidor. Verifica tu conexión.', 'error', 'left');
         } else if (error.status === 400) {
-          this.errorMessage = 'Datos inválidos. Verifica la información ingresada.';
-        } else if (error.status === 409) {
-          this.errorMessage = 'El usuario ya existe. Intenta con otro correo.';
+          this.toastNotifyService.displayToast('Datos inválidos. Verifica la información ingresada.', 'error', 'left');
         } else {
-          this.errorMessage = error.error?.message || 'Error al registrar. Intenta nuevamente.';
+          this.toastNotifyService.displayToast(error.error?.message || 'Error al registrar. Intenta nuevamente.', 'error', 'left');
         }
       }
     });
