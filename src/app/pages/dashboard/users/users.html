@@ -1,5 +1,5 @@
 <app-admin-layout-component>
-  <div class="p-4 sm:ml-64 dark:bg-gray-900 bg-white">
+  <div class="p-4 sm:ml-64 dark:bg-gray-900 bg-white h-full">
     <div class="p-6 mt-14">
       <!-- Header -->
       <div class="mb-6">
@@ -20,8 +20,8 @@
       }
 
       <!-- Barra de búsqueda -->
-      <div class="mb-6">
-        <div class="relative">
+      <div class="mb-6 flex gap-5 justify-between">
+        <div class="relative w-1/2">
           <input
             type="search"
             [value]="searchTerm()"
@@ -33,94 +33,100 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
         </div>
+        
+        <div class="flex justify-end mb-4">
+          <button
+            (click)="openCreateModal()"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg text-sm px-5 py-2.5 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+          >
+            + Agregar Usuario
+          </button>
+        </div>
       </div>
 
       <!-- Tabla de usuarios -->
-      <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th scope="col" class="px-6 py-3">Usuario</th>
-              <th scope="col" class="px-6 py-3">Nombre Completo</th>
-              <th scope="col" class="px-6 py-3">País</th>
-              <th scope="col" class="px-6 py-3">Rol</th>
-              <th scope="col" class="px-6 py-3">Estado</th>
-              <th scope="col" class="px-6 py-3">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            @if (isLoading()) {
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
-                <td colspan="6" class="px-6 py-12 text-center">
-                  <div class="flex justify-center items-center">
-                    <svg class="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currwentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                  </div>
-                </td>
+                <th scope="col" class="px-6 py-3">Usuario</th>
+                <th scope="col" class="px-6 py-3">Nombre Completo</th>
+                <th scope="col" class="px-6 py-3">País</th>
+                <th scope="col" class="px-6 py-3">Rol</th>
+                <th scope="col" class="px-6 py-3">Estado</th>
+                <th scope="col" class="px-6 py-3">Acciones</th>
               </tr>
-            } @else if (filteredUsers().length === 0) {
-              <tr>
-                <td colspan="6" class="px-6 py-12 text-center text-gray-500">
-                  No se encontraron usuarios
-                </td>
-              </tr>
-            } @else {
-              @for (user of filteredUsers(); track user.id) {
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                    {{ user.username }}
-                  </td>
-                  <td class="px-6 py-4">
-                    {{ user.firstname }} {{ user.lastname }}
-                  </td>
-                  <td class="px-6 py-4">
-                    {{ user.country }}
-                  </td>
-                  <td class="px-6 py-4">
-                    <select
-                      [value]="user.role"
-                      (change)="changeUserRole(user, $any($event.target).value)"
-                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    >
-                      <option value="USER">USER</option>
-                      <option value="ADMIN">ADMIN</option>
-                    </select>
-                  </td>
-                  <td class="px-6 py-4">
-                    <label class="inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        [checked]="user.enabled"
-                        (change)="toggleUserEnabled(user)"
-                        class="sr-only peer"
-                      />
-                      <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                    </label>
-                  </td>
-                  <td class="px-6 py-4">
-                    <div class="flex gap-2">
-                      <button
-                        (click)="openEditModal(user)"
-                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
-                      >
-                        Editar
-                      </button>
-                      <button
-                        (click)="openDeleteModal(user)"
-                        class="font-medium text-red-600 dark:text-red-300 hover:underline cursor-pointer"
-                      >
-                        Eliminar
-                      </button>
-                    </div>
+            </thead>
+            <tbody>
+              @if (filteredUsers().length === 0) {
+                <tr>
+                  <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                    No se encontraron usuarios
                   </td>
                 </tr>
+              } @else {
+                @for (user of filteredUsers(); track user.id) {
+                  @defer (on timer(1000ms)) {
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                      <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                        {{ user.username }}
+                      </td>
+                      <td class="px-6 py-4">
+                        {{ user.firstname }} {{ user.lastname }}
+                      </td>
+                      <td class="px-6 py-4">
+                        {{ user.country }}
+                      </td>
+                      <td class="px-6 py-4">
+                        <select
+                          [value]="user.role"
+                          (change)="changeUserRole(user, $any($event.target).value)"
+                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        >
+                          <option value="USER">USER</option>
+                          <option value="ADMIN">ADMIN</option>
+                        </select>
+                      </td>
+                      <td class="px-6 py-4">
+                        <label class="inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            [checked]="user.enabled"
+                            (change)="toggleUserEnabled(user)"
+                            class="sr-only peer"
+                          />
+                          <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                        </label>
+                      </td>
+                      <td class="px-6 py-4">
+                        <div class="flex gap-2">
+                          <button
+                            (click)="openEditModal(user)"
+                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
+                          >
+                            Editar
+                          </button>
+                          <button
+                            (click)="openDeleteModal(user)"
+                            class="font-medium text-red-600 dark:text-red-300 hover:underline cursor-pointer"
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  } @placeholder (minimum 500ms){
+                     <tr>
+                        <td colspan="6" class="">
+                          <app-skeleton />
+                        </td>
+                    </tr>
+                  }
+                }
               }
-            }
-          </tbody>
-        </table>
-      </div>
+            </tbody>
+          </table>
+        </div>
 
       <!-- Contador de usuarios -->
       <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
@@ -128,6 +134,134 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal de creacion -->
+  @if (showCreateModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-lg">
+      <div class="relative w-full max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+          <!-- Header -->
+          <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+              Registrar Nuevo Usuario
+            </h3>
+            <button
+              (click)="closeCreateModal()"
+              type="button"
+              class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+            >
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Body -->
+          <div class="p-6 space-y-6">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                <input
+                  type="email"
+                  [value]="createForm().username"
+                  (input)="updateCreateForm('username', $any($event.target).value)"
+                  placeholder="usuario@correo.com"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contraseña</label>
+                <input
+                  type="password"
+                  [value]="createForm().password"
+                  (input)="updateCreateForm('password', $any($event.target).value)"
+                  placeholder="Contraseña segura"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
+                <input
+                  type="text"
+                  [value]="createForm().firstname"
+                  (input)="updateCreateForm('firstname', $any($event.target).value)"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Apellido</label>
+                <input
+                  type="text"
+                  [value]="createForm().lastname"
+                  (input)="updateCreateForm('lastname', $any($event.target).value)"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">País</label>
+                <select
+                  [value]="createForm().country"
+                  (change)="updateCreateForm('country', $any($event.target).value)"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                >
+                  @for (country of countries(); track country) {
+                    <option [value]="country">{{ country }}</option>
+                  }
+                </select>
+              </div>
+
+              <div>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol</label>
+                <select
+                  [value]="createForm().role"
+                  (change)="updateCreateForm('role', $any($event.target).value)"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                >
+                  <option value="USER">USER</option>
+                  <option value="ADMIN">ADMIN</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="flex items-center p-6 space-x-3 border-t border-gray-200 rounded-b dark:border-gray-600">
+            <button
+              (click)="createUser()"
+              [disabled]="isLoading()"
+              type="button"
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:opacity-50"
+            >
+              @if (isLoading()) {
+                <span class="flex items-center">
+                  <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Registrando...
+                </span>
+              } @else {
+                <span>Registrar</span>
+              }
+            </button>
+
+            <button
+              (click)="closeCreateModal()"
+              type="button"
+              class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 
   <!-- Modal de Edición -->
   @if (showEditModal() && selectedUser()) {

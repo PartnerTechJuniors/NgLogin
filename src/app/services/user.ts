@@ -7,7 +7,7 @@ import { UpdateUserRequest, UpdateUserResponse, User } from '@/app/types/users';
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:8080/api/v1/';
+  private apiUrl = 'http://localhost:8080/api/v1';
 
   constructor(private http: HttpClient) {}
 
@@ -17,6 +17,10 @@ export class UserService {
 
   async getMe(): Promise<Observable<User>> {
     return this.http.get<User>(`${this.apiUrl}/user/me`);
+  }
+
+  registerNewUser(data: UpdateUserRequest): Observable<UpdateUserResponse> {
+    return this.http.post<UpdateUserResponse>(`${this.apiUrl}/admin/register`, data);
   }
 
   updateUser(id: number, data: UpdateUserRequest): Observable<UpdateUserResponse> {

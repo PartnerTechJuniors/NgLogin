@@ -40,8 +40,9 @@ export class LoginComponent {
     this.isLoading = true;
 
     this.authService.login(this.formData).subscribe({
-      next: (response) => {
+      next: async(response) => {
         this.authService.saveToken(response.token);
+        await this.authService.getInfoUser();
         this.authService.navigateToDashboard();
       },
       error: (error: HttpErrorResponse) => {

@@ -96,8 +96,9 @@ export class RegisterComponent {
     this.isLoading = true;
 
     this.authService.register(this.formData).subscribe({
-      next: (response) => {
+      next: async (response) => {
         this.authService.saveToken(response.token);
+        await this.authService.getInfoUser();
         this.authService.navigateToDashboard();
       },
       error: (error: HttpErrorResponse) => {

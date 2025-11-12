@@ -5,10 +5,11 @@ import { UserService } from '@services/user';
 import { AdminLayoutComponent } from "@/app/layouts/admin-layout-component/admin-layout-component";
 import { countries } from '@/app/data/static';
 import { UpdateUserRequest, User } from '@/app/types/users';
+import { Skeleton } from "./skeleton/skeleton";
 
 @Component({
   selector: 'app-users',
-  imports: [FormsModule, AdminLayoutComponent],
+  imports: [FormsModule, AdminLayoutComponent, Skeleton],
   templateUrl: './users.html',
   styles: ``,
 })
@@ -24,12 +25,24 @@ export class Users {
   showEditModal = signal<boolean>(false);
   showDeleteModal = signal<boolean>(false);
   selectedUser = signal<User | null>(null);
+  showCreateModal = signal<boolean>(false);
 
   // Edit form data
   editForm = signal<UpdateUserRequest>({});
 
   // Lista de países
   public countries = signal<string[]>(countries);
+
+  // Create form data
+  createForm = signal<UpdateUserRequest>({
+    username: '',
+    password: '',
+    firstname: '',
+    lastname: '',
+    country: '',
+    role: 'USER',
+    enabled: true
+  });
 
   // Computed - Usuarios filtrados
   filteredUsers = computed(() => {
@@ -200,5 +213,57 @@ export class Users {
 
   updateEditForm(field: keyof UpdateUserRequest, value: any): void {
     this.editForm.update(form => ({ ...form, [field]: value }));
+  }
+
+  openCreateModal(): void {
+    this.createForm.set({
+      username: '',
+      password: '',
+      firstname: '',
+      lastname: '',
+      country: this.countries()[0] || 'Perú',
+      role: 'USER',
+      enabled: true
+    });
+    this.showCreateModal.set(true);
+    this.clearMessages();
+  }
+
+  closeCreateModal(): void {
+    this.showCreateModal.set(false);
+    this.createForm.set({
+      username: '',
+      password: '',
+      firstname: '',
+      lastname: '',
+      country: '',
+      role: 'USER',
+      enabled: true
+    });
+  }
+
+  updateCreateForm(field: keyof UpdateUserRequest, value: any): void {
+    this.createForm.update(f => ({ ...f, [field]: value }));
+  }
+
+  createUser(): void {
+    this.isLoading.set(true);
+    this.clearMessages();
+
+    this.userService.registerNewUser(this.createForm()).subscribe({
+      next: () => {
+        this.successMessage.set('Usuario registrado exitosamente');
+        this.loadUsers();
+        this.closeCreateModal();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isLoading.set(false);
+        if (error.status === 400) {
+          this.errorMessage.set('Datos inválidos. Verifica la información.');
+        } else {
+          this.errorMessage.set('Error al registrar el usuario.');
+        }
+      }
+    });
   }
 }

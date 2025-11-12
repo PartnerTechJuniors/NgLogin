@@ -14,7 +14,6 @@ import { RouterLink } from "@angular/router";
 export class AdminLayoutComponent implements OnInit{
   openDropdownProfile = signal(false);
   openSidebar = signal(false);
-  private userService = inject(UserService);
   authService = inject(AuthService);
   me = signal<User | null>(null);
 
@@ -26,11 +25,7 @@ export class AdminLayoutComponent implements OnInit{
     this.openSidebar.set(!this.openSidebar());
   }
 
-  async ngOnInit(){
-    (await this.userService.getMe()).subscribe({
-      next: async (data) => {
-        this.me.set(data);
-      }
-    })
+  ngOnInit(){
+    this.me.set(this.authService.getUser());
   }
 }
