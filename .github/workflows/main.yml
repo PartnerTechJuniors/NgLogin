@@ -1,0 +1,58 @@
+name: Deploy Spring Boot Backend
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - prod
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+
+      - name: Build JAR
+        run: mvn clean package -DskipTests
+
+      - name: Build Docker image
+        run: docker build -t sistema-obras-backend:${{ github.sha }} .
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ${{ secrets.APP_PATH }}
+
+            if [ "${{ github.event.inputs.environment }}" = "prod" ]; then
+              BRANCH="main"
+            else
+              BRANCH="dev"
+            fi
+
+            echo "Deploying branch: $BRANCH"
+
+            git fetch origin
+            git checkout $BRANCH
+            git pull origin $BRANCH
+
+            docker compose down
+            docker compose build
+            docker compose up -d
